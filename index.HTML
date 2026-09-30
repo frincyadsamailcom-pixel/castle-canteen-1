@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CASTLE CANTEEN — Smart Food Pre-Ordering</title>
+
+<style>
+:root{
+  --g:#187a4b;
+  --g2:#2da365;
+  --bg:#f5f8f5;
+  --ink:#172018;
+  --muted:#6d766f;
+  --line:#e1e8e2;
+  --card:#fff;
+  --cream:#fff7df;
+  --red:#c74343;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:linear-gradient(180deg,#fdfcf7 0%,#f3f8f1 58%,#eef4ed 100%);
+  color:var(--ink);
+  font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:#fffffff2;
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+
+.nav{
+  max-width:1180px;
+  margin:auto;
+  padding:12px 18px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logo{
+  font-size:21px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.mark{
+  width:40px;
+  height:40px;
+  background:var(--g);
+  color:#fff;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+}
+
+.navlinks{
+  margin-left:auto;
+  display:flex;
+  gap:5px;
+}
+
+.navlinks button{
+  background:none;
+  border:0;
+  padding:9px 11px;
+  border-radius:9px;
+  color:#465047;
+}
+
+.navlinks button:hover{
+  background:#edf4ef;
+}
+
+.cart{
+  background:var(--g);
+  color:#fff;
+  border:0;
+  border-radius:11px;
+  padding:10px 14px;
+  font-weight:800;
+}
+
+.badge{
+  background:white;
+  color:var(--g);
+  border-radius:20px;
+  padding:2px 6px;
+  margin-left:4px;
+}
+
+main{
+  max-width:1180px;
+  margin:auto;
+  padding:25px 18px 55px;
+}
+
+.panel{
+  display:none;
+}
+
+.panel.active{
+  display:block;
+}
+
+.hero{
+  box-shadow:0 18px 45px #173d2918;
+  background:linear-gradient(120deg,#173d29,#2a8653);
+  color:#fff;
+  border-radius:25px;
+  padding:40px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  overflow:hidden;
+}
+
+.hero h1{
+  font-size:clamp(34px,5vw,58px);
+  line-height:1;
+  margin:8px 0;
+}
+
+.hero p{
+  color:#d9eee0;
+  max-width:610px;
+  font-size:17px;
+}
+
+.heroart{
+  font-size:100px;
+  transform:rotate(-7deg);
+}
+
+.primary{
+  background:var(--g);
+  color:#fff;
+  border:0;
+  padding:12px 17px;
+  border-radius:11px;
+  font-weight:800;
+}
+
+.hero .primary{
+  background:#fff;
+  color:#17643e;
+}
+
+.title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin:26px 0 15px;
+}
+
+.title h2{
+  margin:0;
+}
+
+.search{
+  width:230px;
+  padding:11px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#fff;
+}
+
+.cats{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+}
+
+.cat{
+  white-space:nowrap;
+  padding:9px 14px;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:999px;
+}
+
+.cat.on{
+  background:var(--g);
+  color:#fff;
+  border-color:var(--g);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+}
+
+.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:17px;
+  overflow:hidden;
+}
+
+.pic{
+  overflow:hidden;
+  position:relative;
+  height:180px;
+  background:var(--cream);
+  display:grid;
+  place-items:center;
+  font-size:68px;
+}
+
+.pic img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.imgfallback{
+  width:100%;
+  height:100%;
+  place-items:center;
+  font-size:42px;
+}
+
+.body{
+  padding:14px;
+}
+
+.body h3{
+  margin:0 0 4px;
+}
+
+.muted{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-top:12px;
+}
+
+.price{
+  font-weight:900;
+}
+
+.add{
+  background:#eaf5ed;
+  color:var(--g);
+  border:0;
+  border-radius:9px;
+  padding:9px 12px;
+  font-weight:800;
+}
+
+.add:hover{
+  background:var(--g);
+  color:#fff;
+}
+
+.notice{
+  background:var(--cream);
+  border:1px solid #f0e3b8;
+  padding:15px;
+  border-radius:13px;
+  margin:20px 0;
+}
+
+.box{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:18px;
+}
+
+.cartbar{
+  margin:22px 0 4px;
+  display:flex;
+  justify-content:center;
+}
+
+.cartbar button{
+  min-width:260px;
+  font-size:16px;
+}
+
+.cartitem{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  margin-bottom:9px;
+}
+
+.emoji{
+  font-size:34px;
+  width:48px;
+  text-align:center;
+}
+
+.qty{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.qty button{
+  width:30px;
+  height:30px;
+  border:0;
+  border-radius:8px;
+  background:#edf4ee;
+  color:var(--g);
+  font-weight:900;
+}
+
+.checkout{
+  max-width:650px;
+  margin-top:16px;
+}
+
+.checkout label{
+  font-size:13px;
+  font-weight:700;
+}
+
+.checkout input,
+.checkout select,
+.form input{
+  width:100%;
+  padding:11px;
+  margin:6px 0 12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  outline:0;
+}
+
+.total{
+  display:flex;
+  justify-content:space-between;
+  font-size:20px;
+  font-weight:900;
+  border-top:1px solid var(--line);
+  padding-top:14px;
+  margin-top:8px;
+}
+
+.empty{
+  text-align:center;
+  padding:40px;
+  background:#fff;
+  border:1px dashed #cbd6cd;
+  border-radius:16px;
+  color:var(--muted);
+}
+
+.orders{
+  display:grid;
+  gap:11px;
+}
+
+.order{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px;
+}
+
+.status{
+  background:#e8f5eb;
+  color:var(--g);
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.login{
+  min-height:65vh;
+  display:grid;
+  place-items:center;
+}
+
+.loginbox{
+  background:#fff;
+  border:1px solid var(--line);
+  box-shadow:0 15px 40px #173d2912;
+  border-radius:22px;
+  padding:28px;
+  width:min(440px,100%);
+}
+
+.loginbox h1{
+  margin-top:0;
+}
+
+.role{
+  display:flex;
+  gap:8px;
+  margin-bottom:15px;
+}
+
+.role button{
+  flex:1;
+  padding:10px;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:10px;
+}
+
+.role .sel{
+  background:var(--g);
+  color:#fff;
+  border-color:var(--g);
+}
+
+.adminnav{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  margin-bottom:15px;
+}
+
+.adminnav button{
+  padding:9px 12px;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:9px;
+}
+
+.adminnav .sel{
+  background:var(--g);
+  color:#fff;
+}
+
+.adminsec{
+  display:none;
+}
+
+.adminsec.active{
+  display:block;
+}
+
+.adminrow{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr auto auto;
+  gap:8px;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.smallbtn{
+  padding:8px 10px;
+  border:0;
+  border-radius:8px;
+  background:#edf4ee;
+  color:var(--g);
+  font-weight:700;
+}
+
+.danger{
+  color:var(--red);
+  background:#fff0f0;
+}
+
+.two{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.hint{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.payopts{
+  display:flex;
+  gap:9px;
+}
+
+.payopt{
+  flex:1;
+  border:1px solid var(--line);
+  padding:12px;
+  border-radius:11px;
+  background:#fff;
+  text-align:left;
+}
+
+.payopt.sel{
+  border:2px solid var(--g);
+  background:#f0f8f2;
+}
+
+.upiinfo{
+  background:#f0f8f2;
+  border:1px solid #d6eadb;
+  border-radius:12px;
+  padding:12px;
+  margin:10px 0;
+  font-size:14px;
+}
+
+.upiapps{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+}
+
+.upibtn{
+  padding:10px 12px;
+  border-radius:11px;
+  border:1px solid var(--line);
+  background:#fff;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:145px;
+}
+
+.upi-logo{
+  width:32px;
+  height:32px;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  font-size:17px;
+  font-weight:900;
+  flex:0 0 32px;
+}
+
+.gpay-logo{
+  background:#fff;
+  border:1px solid #ddd;
+  color:#4285f4;
+}
+
+.phonepe-logo{
+  background:#5f259f;
+  color:#fff;
+}
+
+.bhim-logo{
+  background:#1677c8;
+  color:#fff;
+  font-size:9px;
+}
+
+.paytm-logo{
+  background:#00baf2;
+  color:#fff;
+}
+
+.fampay-logo{
+  background:#111;
+  color:#fff;
+}
+
+.other-logo{
+  background:#edf4ee;
+  color:var(--g);
+}
+
+.paymentPending{
+  background:#fff8df;
+  border:1px solid #f0d889;
+  color:#755c00;
+  border-radius:10px;
+  padding:10px;
+  margin-top:10px;
+  font-size:13px;
+}
+
+.receipt{
+  background:#fff;
+  width:min(420px,100%);
+  margin:0 auto;
+  border:1px solid #dfe5df;
+  border-radius:16px;
+  padding:24px;
+  box-shadow:0 10px 30px #173d2910;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+.receiptHead{
+  text-align:center;
+  border-bottom:1px dashed #aeb7b0;
+  padding-bottom:15px;
+  margin-bottom:14px;
+}
+
+.receiptHead h2{
+  margin:0 0 5px;
+  font-family:Inter,system-ui,sans-serif;
+}
+
+.receiptRow{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin:7px 0;
+}
+
+.receiptItems{
+  border-bottom:1px dashed #aeb7b0;
+  padding-bottom:8px;
+}
+
+.receiptTotal{
+  font-size:18px;
+  font-weight:900;
+  border-top:1px solid #222;
+  padding-top:10px;
+  margin-top:10px;
+}
+
+.receiptFoot{
+  text-align:center;
+  border-top:1px dashed #aeb7b0;
+  margin-top:15px;
+  padding-top:14px;
+  font-family:Inter,system-ui,sans-serif;
+  color:#566158;
+  font-size:12px;
+}
+
+.receiptActions{
+  display:flex;
+  gap:9px;
+  justify-content:center;
+  margin:15px auto;
+  max-width:420px;
+}
+
+.receiptActions button{
+  flex:1;
+  padding:11px;
+  border-radius:10px;
+  border:1px solid #dfe5df;
+  background:#fff;
+  font-weight:800;
+}
+
+.receiptActions .primary{
+  background:var(--g);
+  color:#fff;
+  border-color:var(--g);
+}
+
+.toast{
+  position:fixed;
+  z-index:50;
+  left:50%;
+  bottom:20px;
+  transform:translate(-50%,80px);
+  background:#18251c;
+  color:#fff;
+  padding:12px 18px;
+  border-radius:12px;
+  transition:.25s;
+}
+
+.toast.show{
+  transform:translate(-50%,0);
+}
+
+footer{
+  background:#17231a;
+  color:#d8e2da;
+  padding:25px 18px;
+}
+
+.foot{
+  max-width:1180px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+@media print{
+  header,
+  footer,
+  .receiptActions{
+    display:none!important;
+  }
+
+  body{
+    background:#fff;
+  }
+
+  .receipt{
+    box-shadow:none;
+    border:0;
+    margin:0;
+    width:80mm;
+  }
+
+  main{
+    padding:0;
+  }
+
+  .panel:not(#receipt){
+    display:none!important;
+  }
+}
+
+@media(max-width:850px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .heroart{
+    font-size:70px;
+  }
+
+  .adminrow{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .two{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:550px){
+  main{
+    padding:16px 12px 45px;
+  }
+
+  .hero{
+    padding:27px 22px;
+  }
+
+  .heroart{
+    display:none;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .title{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .search{
+    width:100%;
+  }
+
+  .nav{
+    padding:9px 10px;
+  }
+
+  .navlinks{
+    display:none;
+  }
+
+  .adminrow{
+    grid-template-columns:1fr;
+  }
+
+  .payopts{
+    flex-direction:column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">
+      <div class="mark">🍴</div>
+      CASTLE CANTEEN
+    </div>
+
+    <div class="navlinks" id="navlinks"></div>
+  </div>
+</header>
+
+<main>
+
+<!-- LOGIN -->
+<section id="login" class="panel active">
+
+  <div class="login">
+
+    <div class="loginbox">
+
+      <div style="font-size:45px">🍴</div>
+
+      <h1>Welcome to CASTLE CANTEEN</h1>
+
+      <p class="muted">
+        Smart Food Pre-Ordering
+      </p>
+
+      <div class="role">
+
+        <button
+          id="studentRole"
+          class="sel"
+          onclick="setLoginRole('student')">
+          Student
+        </button>
+
+        <button
+          id="adminRole"
+          onclick="setLoginRole('admin')">
+          Canteen Admin
+        </button>
+
+      </div>
+
+      <div
+        class="form"
+        id="studentFields">
+
+        <label>Student name</label>
+
+        <input
+          id="loginName"
+          placeholder="Enter your name">
+
+        <label>Student ID / Admission No.</label>
+
+        <input
+          id="loginStudentId"
+          placeholder="Enter Student ID">
+
+        <label>Student access code</label>
+
+        <input
+          id="loginCode"
+          type="password"
+          inputmode="numeric"
+          placeholder="Enter access code">
+
+      </div>
+
+      <div
+        class="form"
+        id="adminFields"
+        style="display:none">
+
+        <label>Admin password</label>
+
+        <input
+          id="adminPassword"
+          type="password"
+          placeholder="Enter admin password">
+
+      </div>
+
+      <button
+        class="primary"
+        style="width:100%"
+        onclick="login()">
+
+        Continue →
+
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- HOME -->
+<section id="home" class="panel">
+
+  <div class="hero">
+
+    <div>
+
+      <div
+        style="font-weight:800;color:#bce8ca">
+
+        COLLEGE CANTEEN • QUICK • SIMPLE
+
+      </div>
+
+      <h1>
+        Good food.<br>
+        Less waiting.
+      </h1>
+
+      <p>
+        Order before the break gets busy and collect your food when it’s ready.
+      </p>
+
+      <button
+        class="primary"
+        onclick="show('menu')">
+
+        Show Menu →
+
+      </button>
+
+    </div>
+
+    <div class="heroart">
+      🍛
+    </div>
+
+  </div>
+
+  <div class="notice">
+
+    ⚡ <b>Smart pickup:</b>
+    place your order now and collect it from the canteen counter.
+
+  </div>
+
+  <div class="title">
+
+    <h2>
+      Ready to order?
+    </h2>
+
+    <button
+      class="primary"
+      onclick="show('menu')">
+
+      Show Menu
+
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- MENU -->
+<section id="menu" class="panel">
+
+  <div class="title">
+
+    <h2>
+      Today's menu
+    </h2>
+
+    <input
+      id="search"
+      class="search"
+      placeholder="🔎 Search food"
+      oninput="renderMenu()">
+
+  </div>
+
+  <div id="cats" class="cats"></div>
+
+  <div
+    id="menuGrid"
+    class="grid"
+    style="margin-top:16px">
+  </div>
+
+  <div
+    id="menuCartBar"
+    class="cartbar">
+
+    <button
+      class="cart"
+      onclick="show('cart')">
+
+      🛒 View cart
+
+      <span
+        id="count"
+        class="badge">
+        0
+      </span>
+
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- CART -->
+<section id="cart" class="panel">
+
+  <div class="title">
+
+    <h2>
+      Your cart
+    </h2>
+
+    <button
+      class="add"
+      onclick="show('menu')">
+
+      + Add items
+
+    </button>
+
+  </div>
+
+  <div id="cartArea"></div>
+
+</section>
+
+
+<!-- ORDERS -->
+<section id="orders" class="panel">
+
+  <div class="title">
+
+    <h2>
+      My orders
+    </h2>
+
+  </div>
+
+  <div id="ordersArea"></div>
+
+</section>
+
+
+<!-- RECEIPT -->
+<section id="receipt" class="panel">
+
+  <div class="title">
+
+    <h2>
+      Digital receipt
+    </h2>
+
+    <button
+      class="add"
+      onclick="show('orders')">
+
+      ← My orders
+
+    </button>
+
+  </div>
+
+  <div id="receiptWrap"></div>
+
+</section>
+
+
+<!-- ADMIN -->
+<section id="admin" class="panel">
+
+  <div class="title">
+
+    <h2>
+      ⚙️ Canteen Admin
+    </h2>
+
+    <button
+      class="smallbtn"
+      onclick="logout()">
+
+      Log out
+
+    </button>
+
+  </div>
+
+
+  <div class="adminnav">
+
+    <button
+      class="sel"
+      onclick="adminTab('manage')">
+
+      Menu
+
+    </button>
+
+    <button
+      onclick="adminTab('settings')">
+
+      Payment & Security
+
+    </button>
+
+    <button
+      onclick="adminTab('orders')">
+
+      Orders
+
+    </button>
+
+  </div>
+
+
+  <!-- MENU ADMIN -->
+  <div
+    id="manage"
+    class="adminsec active">
+
+    <div class="box">
+
+      <h3>
+        Add / edit menu items
+      </h3>
+
+      <div class="two">
+
+        <div>
+
+          <label>Name</label>
+
+          <input
+            id="fName"
+            placeholder="Food name">
+
+        </div>
+
+        <div>
+
+          <label>Price (₹)</label>
+
+          <input
+            id="fPrice"
+            type="number"
+            placeholder="50">
+
+        </div>
+
+        <div>
+
+          <label>Category</label>
+
+          <input
+            id="fCat"
+            placeholder="Snacks">
+
+        </div>
+
+        <div>
+
+          <label>Emoji</label>
+
+          <input
+            id="fEmoji"
+            placeholder="🍛">
+
+        </div>
+
+      </div>
+
+      <label>
+        Description
+      </label>
+
+      <input
+        id="fDesc"
+        placeholder="Short description">
+
+      <button
+        class="primary"
+        onclick="addFood()">
+
+        Add menu item
+
+      </button>
+
+      <hr
+        style="border:0;border-top:1px solid var(--line);margin:20px 0">
+
+      <div id="adminMenu"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- SETTINGS -->
+  <div
+    id="settings"
+    class="adminsec">
+
+    <div class="box">
+
+      <h3>
+        UPI payment settings
+      </h3>
+
+      <p class="hint">
+        Set the canteen UPI ID once.
+      </p>
+
+      <label>
+        Canteen UPI ID
+      </label>
+
+      <input
+        id="upiId"
+        placeholder="canteen@upi">
+
+      <label>
+        UPI display name
+      </label>
+
+      <input
+        id="upiName"
+        placeholder="Castle Canteen">
+
+      <button
+        class="primary"
+        onclick="saveSettings()">
+
+        Save UPI settings
+
+      </button>
+
+      <button
+        class="smallbtn"
+        style="margin-top:10px"
+        onclick="copyStudentLink()">
+
+        Copy shared student link
+
+      </button>
+
+      <button
+        class="smallbtn"
+        style="margin-top:10px;margin-left:6px"
+        onclick="shareStudentLink()">
+
+        Share student link
+
+      </button>
+
+      <div
+        class="hint"
+        style="margin-top:8px">
+
+        Students should use the shared HTTPS website link.
+        The configured UPI ID is included in the student link.
+
+      </div>
+
+
+      <hr
+        style="border:0;border-top:1px solid var(--line);margin:22px 0">
+
+
+      <h3>
+        Student access code
+      </h3>
+
+      <p class="hint">
+        Change the code students use to enter the app.
+      </p>
+
+      <label>
+        New student access code
+      </label>
+
+      <input
+        id="studentCodeSetting"
+        type="password"
+        inputmode="numeric"
+        placeholder="Enter new code">
+
+      <button
+        class="primary"
+        onclick="changeStudentCode()">
+
+        Change student code
+
+      </button>
+
+
+      <hr
+        style="border:0;border-top:1px solid var(--line);margin:22px 0">
+
+
+      <h3>
+        Change admin password
+      </h3>
+
+      <label>
+        New password
+      </label>
+
+      <input
+        id="newPass"
+        type="password"
+        placeholder="At least 4 characters">
+
+      <button
+        class="primary"
+        onclick="changePassword()">
+
+        Change password
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ADMIN ORDERS -->
+  <div
+    id="orders"
+    class="adminsec">
+
+    <div class="box">
+
+      <h3>
+        Student orders
+      </h3>
+
+      <div id="adminOrders"></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+  <div class="foot">
+
+    <div>
+
+      <b>
+        CASTLE CANTEEN
+      </b>
+
+      <br>
+
+      <small>
+        Smart college canteen ordering
+      </small>
+
+    </div>
+
+    <div id="session"></div>
+
+  </div>
+
+</footer>
+
+
+<div
+  id="toast"
+  class="toast">
+</div>
+
+
+<script>
+
+/* =========================================================
+   CASTLE CANTEEN
+   Main application data
+   ========================================================= */
+
+const defaultFoods = [
+
+  {
+    id:1,
+    name:"Hyderabadi Chicken Biryani",
+    cat:"Specials",
+    price:95,
+    emoji:"🍗",
+    desc:"Hyderabadi-style chicken biryani",
+    image:"https://www.hindustantimes.com/ht-img/img/2025/11/26/cropped/4-3/Hyderabadi_dum_biryani_recipe_1764143975246_1764143975506.jpg"
+  },
+
+  {
+    id:2,
+    name:"Chicken Meals",
+    cat:"Meals",
+    price:60,
+    emoji:"🍛",
+    desc:"Chicken meal",
+    image:"https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy%2Cf_auto%2Cq_auto/FOOD_CATALOG/IMAGES/CMS/2025/7/2/8459bc78-7398-42fd-81a1-c52694a93717_41aaca70-856b-4339-a546-a3418349e033.jpg"
+  },
+
+  {
+    id:3,
+    name:"Chicken SPL Meal",
+    cat:"Meals",
+    price:85,
+    emoji:"🍛",
+    desc:"Special chicken meal",
+    image:"https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy%2Cf_auto%2Cq_auto/FOOD_CATALOG/IMAGES/CMS/2025/7/2/8459bc78-7398-42fd-81a1-c52694a93717_41aaca70-856b-4339-a546-a3418349e033.jpg"
+  },
+
+  {
+    id:4,
+    name:"Chapathi / Dozata Sukka",
+    cat
